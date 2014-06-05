@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import socket
+import socket, struct, sys
 import message_pb2
 
 class TrisDbConnection:
@@ -8,11 +8,11 @@ class TrisDbConnection:
         self.hostname = host
 	self.port = port
 	try:
-	    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    	    client.connect((self.hostname, self.port))
-	    client.close()
+	    self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    	    self.client.connect((self.hostname, self.port))
 	except:
 	    print "Error connecting to %s on port %s" % (self.hostname, self.port)
+	    sys.exit()
 
     def get(self, s, p=None, o=None):
         req = message_pb2.QueryRequest()
@@ -74,21 +74,34 @@ class TrisDbConnection:
 	self.__sendData(req)
 	return 'OK'
 
+    def close(self):
+	self.client.close()
+
     def __sendData(self, request):
 	try:
-            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.connect((self.hostname, self.port))
 	    request.timestamp = '123456789'
-            client.send(request.SerializeToString())
-            data = ""
-            while True:
-                buf = client.recv(1024)
-                if not len(buf):
-                    break;
-                data += buf
-            client.close()
+	    s = request.SerializeToString()
+	    # prepend header and send message
+	    packed_len = struct.pack('>L', len(s))
+            packed_message = packed_len + s
+            self.client.send(packed_message)
+	    # read header
+	    len_buf = self.socket_read_n(4)
+            msg_len = struct.unpack('>L', len_buf)[0]
+            msg_buf = self.socket_read_n(msg_len)
             res = message_pb2.QueryResponse()
-            res.ParseFromString(data)
+            res.ParseFromString(msg_buf)
 	    return res
-        except:
-            print "Connection error"
+        except Exception as e:
+            print "Connection error: ",e
+
+    def socket_read_n(self, n):
+        buf = ''
+        while n > 0:
+            data = self.client.recv(n)
+            if data == '':
+                raise RuntimeError('Connection error')
+		sys.exit()
+            buf += data
+            n -= len(data)
+        return buf
