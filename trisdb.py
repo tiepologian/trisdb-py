@@ -56,11 +56,8 @@ class TrisDbConnection:
     def create(self, s, p, o):
         req = message_pb2.QueryRequest()
         req.query = 'CREATE "%s" "%s" "%s"' % (s, p, o)
-	tmp = self.__sendData(req)
-        result = []
-        for i in tmp.data:
-            result.append({'subject':i.subject, 'predicate':i.predicate, 'object':i.object})
-        return result
+	self.__sendData(req)
+        return 'OK'
 
     def delete(self, s, p, o):
         req = message_pb2.QueryRequest()
