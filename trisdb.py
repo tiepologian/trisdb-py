@@ -17,9 +17,9 @@ class TrisDbConnection:
     def get(self, s, p=None, o=None):
         req = message_pb2.QueryRequest()
 	if p is None:
-	    req.query = 'GET "%s"' % s
+	    req.query.append('GET "%s"' % s)
 	else:
-	    req.query = 'GET "%s" "%s" "%s"' % (s, p, o)
+	    req.query.append('GET "%s" "%s" "%s"' % (s, p, o))
 	tmp = self.__sendData(req)
         result = []
         for i in tmp.data:
@@ -28,7 +28,7 @@ class TrisDbConnection:
 
     def gets(self, s, p, o):
         req = message_pb2.QueryRequest()
-        req.query = 'GETS "%s" "%s" "%s"' % (s, p, o)
+        req.query.append('GETS "%s" "%s" "%s"' % (s, p, o))
         tmp = self.__sendData(req)
         result = []
         for i in tmp.data:
@@ -37,7 +37,7 @@ class TrisDbConnection:
 
     def getp(self, s, p, o):
         req = message_pb2.QueryRequest()
-        req.query = 'GETP "%s" "%s" "%s"' % (s, p, o)
+        req.query.append('GETP "%s" "%s" "%s"' % (s, p, o))
         tmp = self.__sendData(req)
         result = []
         for i in tmp.data:
@@ -46,7 +46,7 @@ class TrisDbConnection:
 
     def geto(self, s, p, o):
         req = message_pb2.QueryRequest()
-        req.query = 'GETO "%s" "%s" "%s"' % (s, p, o)
+        req.query.append('GETO "%s" "%s" "%s"' % (s, p, o))
         tmp = self.__sendData(req)
         result = []
         for i in tmp.data:
@@ -55,19 +55,29 @@ class TrisDbConnection:
 
     def create(self, s, p, o):
         req = message_pb2.QueryRequest()
-        req.query = 'CREATE "%s" "%s" "%s"' % (s, p, o)
+        q = req.query.append('CREATE "%s" "%s" "%s"' % (s, p, o))
 	self.__sendData(req)
+        return 'OK'
+
+    def multi(self):
+        self.myMulti = message_pb2.QueryRequest()
+
+    def multiAdd(self, s, p, o):
+	self.myMulti.query.append('CREATE "%s" "%s" "%s"' % (s, p, o))
+
+    def multiExec(self):
+	self.__sendData(self.myMulti)
         return 'OK'
 
     def delete(self, s, p, o):
         req = message_pb2.QueryRequest()
-        req.query = 'DELETE "%s" "%s" "%s"' % (s, p, o)
+        q = req.query.append('DELETE "%s" "%s" "%s"' % (s, p, o))
         self.__sendData(req)
         return 'OK'
 
     def clear(self):
         req = message_pb2.QueryRequest()
-        req.query = 'CLEAR'
+        req.query.append('CLEAR')
 	self.__sendData(req)
 	return 'OK'
 

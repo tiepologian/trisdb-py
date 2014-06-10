@@ -13,7 +13,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='message.proto',
   package='',
-  serialized_pb='\n\rmessage.proto\"0\n\x0cQueryRequest\x12\r\n\x05query\x18\x01 \x02(\t\x12\x11\n\ttimestamp\x18\x02 \x01(\t\"\x85\x01\n\rQueryResponse\x12#\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x15.QueryResponse.Record\x12\x11\n\ttimestamp\x18\x02 \x01(\t\x1a<\n\x06Record\x12\x0f\n\x07subject\x18\x01 \x02(\t\x12\x11\n\tpredicate\x18\x02 \x02(\t\x12\x0e\n\x06object\x18\x03 \x02(\t')
+  serialized_pb='\n\rmessage.proto\"0\n\x0cQueryRequest\x12\r\n\x05query\x18\x01 \x03(\t\x12\x11\n\ttimestamp\x18\x02 \x01(\t\"\x85\x01\n\rQueryResponse\x12#\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x15.QueryResponse.Record\x12\x11\n\ttimestamp\x18\x02 \x01(\t\x1a<\n\x06Record\x12\x0f\n\x07subject\x18\x01 \x02(\t\x12\x11\n\tpredicate\x18\x02 \x02(\t\x12\x0e\n\x06object\x18\x03 \x02(\t')
 
 
 
@@ -27,8 +27,8 @@ _QUERYREQUEST = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='query', full_name='QueryRequest.query', index=0,
-      number=1, type=9, cpp_type=9, label=2,
-      has_default_value=False, default_value=unicode("", "utf-8"),
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
