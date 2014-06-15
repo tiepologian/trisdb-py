@@ -17,7 +17,7 @@ class TrisDbConnection:
 	    	self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     	    	self.client.connect((self.hostname, self.port))
 	except:
-	    print "Error connecting to %s on port %s" % (self.hostname, self.port)
+	    print "Error connecting to %s" % (self.hostname)
 	    sys.exit()
 
     def get(self, s, p=None, o=None):
@@ -66,13 +66,10 @@ class TrisDbConnection:
         return 'OK'
 
     def multi(self):
-        self.myMulti = message_pb2.QueryRequest()
+	return Multi()
 
-    def multiAdd(self, s, p, o):
-	self.myMulti.query.append('CREATE "%s" "%s" "%s"' % (s, p, o))
-
-    def multiExec(self):
-	self.__sendData(self.myMulti)
+    def execute(self, multi):
+	self.__sendData(multi.request)
         return 'OK'
 
     def delete(self, s, p, o):
@@ -118,3 +115,11 @@ class TrisDbConnection:
             buf += data
             n -= len(data)
         return buf
+
+
+class Multi:
+    def __init__(self):
+        self.request = message_pb2.QueryRequest()
+
+    def create(self, s, p, o):
+	self.request.query.append('CREATE "%s" "%s" "%s"' % (s, p, o))
