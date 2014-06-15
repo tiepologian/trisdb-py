@@ -12,6 +12,7 @@ sudo pip install trisdb-py
 ```python
 >>> from trisdb import *
 
+>>> # Connect and insert some data
 >>> db = TrisDbConnection('localhost', 1205)
 >>> db.create('Alice', 'loves', 'pizza')
 >>> db.create('Kate', 'likes', 'football')
@@ -26,5 +27,13 @@ sudo pip install trisdb-py
 >>> for i in result:
 >>>    print i
 
+>>> # Batch insert using MULTI
+>>> m = db.multi()
+>>> for i in range(0,10):
+>>>     m.create('key'+str(i), 'value', 'value'+str(i))
+>>> db.execute(m)
+
+>>> # Clear all data from DB and close connection
 >>> db.clear()
+>>> db.close()
 ```
