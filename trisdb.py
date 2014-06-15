@@ -4,12 +4,18 @@ import socket, struct, sys
 import message_pb2
 
 class TrisDbConnection:
-    def __init__(self, host, port):
+    def __init__(self, host, port = None):
         self.hostname = host
 	self.port = port
 	try:
-	    self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    	    self.client.connect((self.hostname, self.port))
+	    if port is None:
+	        # unix socket
+		self.client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+		self.client.connect(self.hostname)
+	    else:
+		# tcp
+	    	self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    	    	self.client.connect((self.hostname, self.port))
 	except:
 	    print "Error connecting to %s on port %s" % (self.hostname, self.port)
 	    sys.exit()
