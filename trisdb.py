@@ -20,12 +20,15 @@ class TrisDbConnection:
 	    print "Error connecting to %s" % (self.hostname)
 	    sys.exit()
 
-    def get(self, s, p=None, o=None):
+    def get(self, s=None, p=None, o=None):
         req = message_pb2.QueryRequest()
+	if s is None:
+	    s = "*"
 	if p is None:
-	    req.query.append('GET "%s"' % s)
-	else:
-	    req.query.append('GET "%s" "%s" "%s"' % (s, p, o))
+            p = "*"
+	if o is None:
+            o = "*"
+        req.query.append('GET "%s" "%s" "%s"' % (s, p, o))
 	tmp = self.__sendData(req)
         result = []
         for i in tmp.data:
@@ -83,6 +86,18 @@ class TrisDbConnection:
         req.query.append('CLEAR')
 	self.__sendData(req)
 	return 'OK'
+
+    def save(self):
+	req = message_pb2.QueryRequest()
+	req.query.append('SAVE')
+	self.__sendData(req)
+	return 'OK'
+
+    def count(self):
+	req = message_pb2.QueryRequest()
+	req.query.append('COUNT')
+	tmp = self.__sendData(req)
+	return tmp.data[0].object
 
     def close(self):
 	self.client.close()
